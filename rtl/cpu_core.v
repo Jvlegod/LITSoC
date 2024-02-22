@@ -65,6 +65,8 @@ module cpu_core(
     wire[`WORD_DATA] id2idex_imm_sb_o;
     wire[`WORD_DATA] id2idex_imm_uj_o;
     
+    wire id2cu_wb_en_o;
+
     IDU u_IDU(
         .ifid2id_ins_i      (ifid2id_ins_o      ),
         .ifid2id_addr_i     (ifid2id_addr_o     ),
@@ -84,7 +86,8 @@ module cpu_core(
         .id2idex_funct3_o   (id2idex_funct3_o   ),
         .id2idex_imm_i_o    (id2idex_imm_i_o    ),
         .id2idex_imm_sb_o   (id2idex_imm_sb_o   ),
-        .id2idex_imm_uj_o   (id2idex_imm_uj_o   )
+        .id2idex_imm_uj_o   (id2idex_imm_uj_o   ),
+        .id2cu_wb_en_o      (id2cu_wb_en_o      )
     );
     
     
@@ -140,6 +143,7 @@ module cpu_core(
     wire[`WORD_DATA] ex2regs_rd_data_o;
     wire[`WORD_DATA] ex2pc_jump_addr_o;
     wire ex2cu_jump_en_o;
+    wire ex2regs_wb_en_o;
 
     EXU u_EXU(
         .idex2ex_id_ins_i  (idex2ex_id_ins_o  ),
@@ -157,8 +161,10 @@ module cpu_core(
         .idex2ex_imm_uj_i  (idex2ex_imm_uj_o  ),
         .ex2regs_rd_addr_o (ex2regs_rd_addr_o ),
         .ex2regs_rd_data_o (ex2regs_rd_data_o ),
+        .ex2regs_wb_en_o   (ex2regs_wb_en_o   ),
         .ex2pc_jump_addr_o (ex2pc_jump_addr_o ),
-        .ex2cu_jump_en_o   (ex2cu_jump_en_o   )
+        .ex2cu_jump_en_o   (ex2cu_jump_en_o   ),
+        .cu2ex_wb_en_i     (cu2ex_wb_en_o     )
     );
     
     // regs
@@ -173,17 +179,23 @@ module cpu_core(
         .regs2id_rs1_data_o (regs2id_rs1_data_o ),
         .regs2id_rs2_data_o (regs2id_rs2_data_o ),
         .ex2regs_rd_addr_i  (ex2regs_rd_addr_o  ),
-        .ex2regs_rd_data_i  (ex2regs_rd_data_o  )
+        .ex2regs_rd_data_i  (ex2regs_rd_data_o  ),
+        .ex2regs_wb_en_i    (ex2regs_wb_en_o    )
     );
     
     //CU
     wire cu2_refresh_flag_o;
     wire cu2pc_jump_en_o;
+    wire cu2ex_wb_en_o;
 
     CU u_CU(
+        .clk                (clk                ),
+        .rest               (rest               ),
         .ex2cu_jump_en_i    (ex2cu_jump_en_o    ),
         .cu2_refresh_flag_o (cu2_refresh_flag_o ),
-        .cu2pc_jump_en_o    (cu2pc_jump_en_o    )
+        .cu2pc_jump_en_o    (cu2pc_jump_en_o    ),
+        .id2cu_wb_en_i      (id2cu_wb_en_o      ),
+        .cu2ex_wb_en_o      (cu2ex_wb_en_o      )
     );
     
 endmodule

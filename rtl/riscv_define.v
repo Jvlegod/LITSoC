@@ -48,8 +48,9 @@
 `define INS_REM    3'b110
 `define INS_REMU   3'b111
 
-// J type INS
-`define INS_JAL    7'b1101111
+// UJ type INS
+`define INS_TYPE_UJ   7'b1101111 // JAL
+// `define INS_JAL    7'b1101111
 `define INS_JALR   7'b1100111
 
 `define INS_LUI    7'b0110111

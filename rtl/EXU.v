@@ -24,10 +24,13 @@ module EXU(
     // to regs
     output reg[`REGS_ADDR] ex2regs_rd_addr_o,
     output reg[`WORD_DATA] ex2regs_rd_data_o,
+    output reg ex2regs_wb_en_o,
     // to PC
     output reg[`WORD_ADDR] ex2pc_jump_addr_o,
     // to CU
-    output reg ex2cu_jump_en_o
+    output reg ex2cu_jump_en_o,
+    // from CU
+    input wire cu2ex_wb_en_i
 );
     wire [`WORD_DATA] ALU_add;
     wire [`WORD_DATA] ALU_sub;
@@ -38,7 +41,12 @@ module EXU(
     wire [`WORD_DATA] ALU_srl;
     wire [`WORD_DATA] ALU_stl;
     wire [`WORD_DATA] ALU_stlu;
-    wire  ALU_beq;
+    wire ALU_beq;
+    wire ALU_bne;
+    wire ALU_blt;
+    wire ALU_bge;
+    wire ALU_bltu;
+    wire ALU_bgeu;
 
     ALU u_ALU(
         .ALU_source1 (idex2ex_source1_i ),
@@ -52,11 +60,17 @@ module EXU(
         .ALU_srl     (ALU_srl           ),
         .ALU_stl     (ALU_stl           ),
         .ALU_stlu    (ALU_stlu          ),
-        .ALU_beq     (ALU_beq           )
+        .ALU_beq     (ALU_beq           ),
+        .ALU_bne     (ALU_bne           ),
+        .ALU_blt     (ALU_blt           ),
+        .ALU_bge     (ALU_bge           ),
+        .ALU_bltu    (ALU_bltu           ),
+        .ALU_bgeu    (ALU_bgeu           )
     );
     
 
     always @(*) begin
+        ex2regs_wb_en_o = cu2ex_wb_en_i; // 写回指示
         case(idex2ex_opcode_i)
             `INS_TYPE_I:begin
                 case(idex2ex_funct3_i)
@@ -112,15 +126,56 @@ module EXU(
             end
             `INS_TYPE_B:begin
                 case(idex2ex_funct3_i)
-                    `INS_BEQ:begin
+                    `INS_BEQ:begin//BEQ
                         ex2cu_jump_en_o = (ALU_beq == `ENABLE) ? `ENABLE : `DISABLE;
                         ex2pc_jump_addr_o = (ALU_beq == `ENABLE) ? (idex2ex_id_addr_i + idex2ex_imm_sb_i) : `DEFAULT_32_ZERO;
                         ex2regs_rd_addr_o = `DEFAULT_5_ZERO;
                         ex2regs_rd_data_o = `DEFAULT_32_ZERO;
                     end
+                    `INS_BNE:begin//BNE
+                        ex2cu_jump_en_o = (ALU_bne == `ENABLE) ? `ENABLE : `DISABLE;
+                        ex2pc_jump_addr_o = (ALU_bne == `ENABLE) ? (idex2ex_id_addr_i + idex2ex_imm_sb_i) : `DEFAULT_32_ZERO;
+                        ex2regs_rd_addr_o = `DEFAULT_5_ZERO;
+                        ex2regs_rd_data_o = `DEFAULT_32_ZERO;
+                    end
+                    `INS_BLT:begin//BLT
+                        ex2cu_jump_en_o = (ALU_blt == `ENABLE) ? `ENABLE : `DISABLE;
+                        ex2pc_jump_addr_o = (ALU_blt == `ENABLE) ? (idex2ex_id_addr_i + idex2ex_imm_sb_i) : `DEFAULT_32_ZERO;
+                        ex2regs_rd_addr_o = `DEFAULT_5_ZERO;
+                        ex2regs_rd_data_o = `DEFAULT_32_ZERO;
+                    end
+                    `INS_BGE:begin//BGE
+                        ex2cu_jump_en_o = (ALU_bge == `ENABLE) ? `ENABLE : `DISABLE;
+                        ex2pc_jump_addr_o = (ALU_bge == `ENABLE) ? (idex2ex_id_addr_i + idex2ex_imm_sb_i) : `DEFAULT_32_ZERO;
+                        ex2regs_rd_addr_o = `DEFAULT_5_ZERO;
+                        ex2regs_rd_data_o = `DEFAULT_32_ZERO;
+                    end
+                    `INS_BLTU:begin//BLTU
+                        ex2cu_jump_en_o = (ALU_bltu == `ENABLE) ? `ENABLE : `DISABLE;
+                        ex2pc_jump_addr_o = (ALU_bltu == `ENABLE) ? (idex2ex_id_addr_i + idex2ex_imm_sb_i) : `DEFAULT_32_ZERO;
+                        ex2regs_rd_addr_o = `DEFAULT_5_ZERO;
+                        ex2regs_rd_data_o = `DEFAULT_32_ZERO;
+                    end
+                    `INS_BGEU:begin//BGEU
+                        ex2cu_jump_en_o = (ALU_bgeu == `ENABLE) ? `ENABLE : `DISABLE;
+                        ex2pc_jump_addr_o = (ALU_bgeu == `ENABLE) ? (idex2ex_id_addr_i + idex2ex_imm_sb_i) : `DEFAULT_32_ZERO;
+                        ex2regs_rd_addr_o = `DEFAULT_5_ZERO;
+                        ex2regs_rd_data_o = `DEFAULT_32_ZERO;
+                    end
                     default:begin
+                        ex2cu_jump_en_o = `DISABLE;
+                        ex2pc_jump_addr_o = `DEFAULT_32_ZERO;
+                        ex2regs_rd_addr_o = `DEFAULT_5_ZERO;
+                        ex2regs_rd_data_o = `DEFAULT_32_ZERO;
                     end
                 endcase
+            end
+            `INS_TYPE_UJ:begin
+                // 此处可能需要判断合法性
+                ex2cu_jump_en_o = `ENABLE;
+                ex2pc_jump_addr_o = idex2ex_id_addr_i + idex2ex_imm_uj_i;
+                ex2regs_rd_addr_o = idex2ex_rd_addr_i; // 手册上写默认x1???
+                ex2regs_rd_data_o = idex2ex_id_addr_i + `A_PC;
             end
             default:begin
                 ex2cu_jump_en_o = `DISABLE;
