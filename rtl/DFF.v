@@ -1,3 +1,5 @@
+`include "global.v"
+
 module DFF #(
     parameter WD = 32
 )(

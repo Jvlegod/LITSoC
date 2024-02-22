@@ -13,11 +13,16 @@ module regs(
     input wire[`REGS_ADDR] ex2regs_rd_addr_i,
     input wire[`WORD_DATA] ex2regs_rd_data_i,
     input wire ex2regs_wb_en_i
+    // from mem
+    output wire mem2regs_wb_en_i,
+    output wire[`RISCV_RD] mem2regs_rd_i,
+    output wire[`WORD_DATA] mem2regs_rd_data_i
 );
     // 寄存器堆
     reg[`WORD_DATA] x_regs[0:31];
     integer i;
 
+    // 这里还有一次控制冒险没有判断
     // ID
     // rs1
     always @(*) begin
@@ -49,6 +54,8 @@ module regs(
             end
         end else if (ex2regs_wb_en_i == `ENABLE) begin
             x_regs[ex2regs_rd_addr_i] <= ex2regs_rd_data_i;
+        end else if (mem2regs_wb_en_i == `ENABLE) begin
+            x_regs[mem2regs_rd_i] <= mem2regs_rd_data_i;
         end
     end
 

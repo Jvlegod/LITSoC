@@ -7,12 +7,11 @@ module bus(
 
     // 中间
     output wire[`BUS_SLAVE_ADDR] bus_s_addr,        // 选择出的从属信号的地址
-    output wire				     bus_s_as_,	 
+    output wire				     bus_s_as,	 
 	output wire				     bus_s_rw,
     output wire[`WORD_DATA]      bus_s_wr_data      // 主控写入的数据，送给从设备接收*
 
     // 主控
-    
     input wire                  bus_m0_req,         // 请求信号
     input wire[`BUS_SLAVE_ADDR] bus_m0_addr,        // 选择的从属设备
     input wire                  bus_m0_as,          // 选通信号
@@ -43,7 +42,7 @@ module bus(
 
     // 从属
     output wire bus_rdy,                  // 从属就绪信号
-    output wire[`WORD_DATA] bus_rd_data,  // 从属读出的数据
+    output wire[`WORD_DATA] bus_rd_data,  // 从属读出的数据，主设备接收
 
     input  wire bus_s0_cs,                // s0从属片选信号
     input  wire bus_s0_rd_data,           // s0从属读出的数据

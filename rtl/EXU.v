@@ -22,15 +22,26 @@ module EXU(
     //UJ
     input wire[`WORD_DATA] idex2ex_imm_uj_i,
     // to regs
-    output reg[`REGS_ADDR] ex2regs_rd_addr_o,
-    output reg[`WORD_DATA] ex2regs_rd_data_o,
     output reg ex2regs_wb_en_o,
     // to PC
     output reg[`WORD_ADDR] ex2pc_jump_addr_o,
     // to CU
     output reg ex2cu_jump_en_o,
     // from CU
-    input wire cu2ex_wb_en_i
+    input wire cu2ex_wb_en_i,
+    input wire cu2ex_mem_en_i,
+    // to EXMEMU
+    output wire ex2exmem_wb_en_o,
+    output wire ex2exmem_mem_en_o,
+    output reg[`WORD_ADDR] ex2exmem_mem_addr_o, // 访问的地址
+    output wire[`RISCV_OPCODE] ex2exmem_opcode_o, // 操作码
+    output wire[`RISCV_FUNCT3] ex2exmem_funct3_o,
+    output wire[`RISCV_RD]  ex2exmem_rd_o,   // rd寄存器
+    output wire[`RISCV_RS1] ex2exmem_rs1_o,  // rs1寄存器
+    output wire[`RISCV_RS2] ex2exmem_rs2_o   // rs2寄存器
+    // to regs
+    output reg[`REGS_ADDR] ex2regs_rd_addr_o,
+    output reg[`WORD_DATA] ex2regs_rd_data_o
 );
     wire [`WORD_DATA] ALU_add;
     wire [`WORD_DATA] ALU_sub;
@@ -68,9 +79,20 @@ module EXU(
         .ALU_bgeu    (ALU_bgeu           )
     );
     
+    // IF_WB_MUX u_IF_WB_MUX(
+    //     .exif_wb_en_i      (exif_wb_en_o      ),
+    //     .exif_mem_en_i     (exif_mem_en_o     ),
+    //     .ex2mux_rd_addr_i  (ex2regs_rd_addr_o  ),
+    //     .ex2mux_rd_data_i  (ex2regs_rd_data_o  ),
+    //     .ex2regs_rd_addr_o (ex2regs_rd_addr_o ),
+    //     .ex2regs_rd_data_o (ex2regs_rd_data_o )
+    // );
+    
 
     always @(*) begin
         ex2regs_wb_en_o = cu2ex_wb_en_i; // 写回指示
+        ex2exmem_wb_en_o = `DISABLE;
+        ex2exmem_mem_en_o = `DISABLE;
         case(idex2ex_opcode_i)
             `INS_TYPE_I:begin
                 case(idex2ex_funct3_i)
@@ -176,6 +198,19 @@ module EXU(
                 ex2pc_jump_addr_o = idex2ex_id_addr_i + idex2ex_imm_uj_i;
                 ex2regs_rd_addr_o = idex2ex_rd_addr_i; // 手册上写默认x1???
                 ex2regs_rd_data_o = idex2ex_id_addr_i + `A_PC;
+            end
+            `INS_TYPE_L:begin
+                case(id2idex_funct3_o)
+                    `INS_LB:begin
+                        ex2regs_wb_en_o = `DISABLE;
+                        ex2exmem_mem_addr_o = ALU_add;
+                        ex2exmem_rd_o = idex2ex_rd_addr_i;
+                        ex2exmem_wb_en_o = `ENABLE;
+                        ex2exmem_mem_en_o = `ENABLE;
+                    end
+                    default:begin
+                    end
+                endcase
             end
             default:begin
                 ex2cu_jump_en_o = `DISABLE;

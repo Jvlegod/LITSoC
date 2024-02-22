@@ -12,8 +12,10 @@ module CU(
     output reg cu2pc_jump_en_o, // jump使能
     // from ID
     input wire id2cu_wb_en_i, // 写回使能
+    input wire id2cu_mem_en_i, // 访存使能
     // to EX
-    output reg cu2ex_wb_en_o // 写回使能
+    output reg cu2ex_wb_en_o     // 写回使能
+    output reg cu2ex_mem_en_o    // 访存使能（写入EX）
 );
 
     always @(*) begin
@@ -32,12 +34,14 @@ module CU(
         end
     end
 
-    // 停止一拍，方便和EX同步
+    // 停止一拍，和EX同步
     always @(posedge clk) begin
         if (rest == `RESET) begin
             cu2ex_wb_en_o <= `DISABLE;
+            cu2ex_mem_en_o <= `DISABLE;
         end else begin
             cu2ex_wb_en_o <= id2cu_wb_en_i;
+            cu2ex_mem_en_o <= id2cu_mem_en_i;
         end
     end
 
