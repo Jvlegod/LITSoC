@@ -18,9 +18,11 @@ module IDEXU(
     //I
     input wire[`WORD_DATA] id2idex_imm_i_i,
     //SB
-    output wire[`WORD_DATA] id2idex_imm_sb_i,
+    input wire[`WORD_DATA] id2idex_imm_sb_i,
     //UJ
-    output wire[`WORD_DATA] id2idex_imm_uj_i,
+    input wire[`WORD_DATA] id2idex_imm_uj_i,
+    //S
+    input wire[`WORD_DATA] id2idex_imm_s_i,
     // to EX
     output wire[`WORD_ADDR] idex2ex_source1_o,
     output wire[`WORD_ADDR] idex2ex_source2_o,
@@ -39,6 +41,8 @@ module IDEXU(
     output wire[`WORD_DATA] idex2ex_imm_sb_o,
     //UJ
     output wire[`WORD_DATA] idex2ex_imm_uj_o,
+    //S
+    output wire[`WORD_DATA] idex2ex_imm_s_o,
     // from CU
     input wire cu2_refresh_flag_i
 );
@@ -63,6 +67,8 @@ module IDEXU(
     DFF #(32) u_DFF_12 (clk, rest, `DEFAULT_32_ZERO, id2idex_imm_sb_i, idex2ex_imm_sb_o, refresh_flag);
     //UJ
     DFF #(32) u_DFF_13 (clk, rest, `DEFAULT_32_ZERO, id2idex_imm_uj_i, idex2ex_imm_uj_o, refresh_flag);
+    //S
+    DFF #(32) u_DFF_14 (clk, rest, `DEFAULT_32_ZERO, id2idex_imm_s_i, idex2ex_imm_s_o, refresh_flag);
     
     // DFF #(32) u_DFF_1 (clk, rest, `DEFAULT_32_ZERO, id2idex_source1_i, idex2ex_source1_o, `ENABLE);
     // DFF #(32) u_DFF_2 (clk, rest, `DEFAULT_32_ZERO, id2idex_source2_i, idex2ex_source2_o, `ENABLE);

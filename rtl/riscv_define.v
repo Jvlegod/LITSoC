@@ -10,7 +10,11 @@
 `define INS_ORI    3'b110
 `define INS_ANDI   3'b111
 `define INS_SLLI   3'b001
+// srli是逻辑右移，srai是算术右移，区别在于srai用最高位填充空白
 `define INS_SRLI   3'b101
+`define INS_SRAI   3'b101
+`define INS_SRLI_H 7'b0000000
+`define INS_SRAI_H 7'b0100000
 
 // L type INS
 `define INS_TYPE_L 7'b0000011
@@ -28,7 +32,20 @@
 
 // R and M type INS
 `define INS_TYPE_R_M 7'b0110011
-`define INS_ADD 3'b000
+`define INS_ADD  3'b000
+`define INS_ADD_H  7'b0000000
+`define INS_SUB  3'b000
+`define INS_SUB_H  7'b0100000
+`define INS_SLL  3'b001
+`define INS_SLT  3'b010
+`define INS_SLTU 3'b011
+`define INS_XOR  3'b100
+`define INS_SRL  3'b101
+`define INS_SRL_H  7'b0000000
+`define INS_SRA  3'b101
+`define INS_SRA_H  7'b0100000
+`define INS_OR   3'b110
+`define INS_AND  3'b111
 // R type INS
 `define INS_ADD_SUB 3'b000
 `define INS_SLL    3'b001
@@ -49,11 +66,10 @@
 `define INS_REMU   3'b111
 
 // UJ type INS
-`define INS_TYPE_UJ   7'b1101111 // JAL
+`define INS_TYPE_JAL   7'b1101111 // JAL
 // `define INS_JAL    7'b1101111
-`define INS_JALR   7'b1100111
-
-`define INS_LUI    7'b0110111
+`define INS_TYPE_JALR   7'b1100111
+`define INS_TYPE_LUI    7'b0110111
 `define INS_AUIPC  7'b0010111
 `define INS_NOP    32'h00000013
 `define INS_NOP_OP 7'b0000001

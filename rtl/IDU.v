@@ -29,6 +29,8 @@ module IDU(
     output reg[`WORD_DATA] id2idex_imm_sb_o,
     //UJ
     output reg[`WORD_DATA] id2idex_imm_uj_o,
+    //S
+    output reg[`WORD_DATA] id2idex_imm_s_o,
     // to CU
     output reg id2cu_wb_en_o, // 写回使能
     output reg id2cu_mem_en_o  // 访存使能
@@ -37,6 +39,7 @@ module IDU(
     wire[`RISCV_IMMI] imm_i;
     wire[`RISCV_IMMSB] imm_sb;
     wire[`RISCV_IMMUJ] imm_uj;
+    wire[`RISCV_IMMS] imm_s;
 
     assign id2idex_opcode_o = ifid2id_ins_i[6:0];
     assign id2idex_rd_o = ifid2id_ins_i[11:7];
@@ -50,7 +53,8 @@ module IDU(
     assign imm_sb = {ifid2id_ins_i[31], ifid2id_ins_i[7], ifid2id_ins_i[30:25], ifid2id_ins_i[11:8], 1'b0}; // 12:0
     //UJ
     assign imm_uj = {ifid2id_ins_i[31], ifid2id_ins_i[19:12], ifid2id_ins_i[20], ifid2id_ins_i[30:21], 1'b0};// 20:0
-
+    //S
+    assign imm_s = {ifid2id_ins_i[31:25], ifid2id_ins_i[11:7]}; // 11:0
 
     always @(*) begin
         id2idex_ins_o = ifid2id_ins_i;
@@ -81,12 +85,13 @@ module IDU(
             end
             `INS_TYPE_R_M:begin
                 case(id2idex_funct3_o)
-                    `INS_ADD:begin//ADD
+                    `INS_ADD,`INS_SUB,`INS_SLL,`INS_SLT,`INS_SLTU,`INS_XOR,`INS_SRL,`INS_SRA,`INS_OR,`INS_AND:begin
                         id2regs_rs1_addr_o = id2idex_rs1_o;
                         id2regs_rs2_addr_o = id2idex_rs2_o;
                         id2idex_source1_o = regs2id_rs1_data_i;
                         id2idex_source2_o = regs2id_rs2_data_i;
                         id2idex_rd_addr_o = id2idex_rd_o;
+                        id2idex_imm_i_o = imm_i;
                         id2cu_wb_en_o = `ENABLE;
                     end
                     default:begin
@@ -121,14 +126,25 @@ module IDU(
                     end
                 endcase
             end
-            `INS_TYPE_UJ:begin
+            `INS_TYPE_JAL:begin // JAL
                 id2idex_rd_addr_o = id2idex_rd_o;
                 id2idex_imm_uj_o = {{11{imm_uj[20]}}, imm_uj}; // 符号位扩展
                 id2cu_wb_en_o = `DISABLE;
             end
-            `INS_TYPE_L:begin
+            `INS_TYPE_JALR:begin // JALR（需要f寄存器支持）
+                if (id2idex_funct3_o == 3'b010) begin
+                    // id2regs_rs1_addr_o = id2idex_rs1_o;
+                    // id2regs_rs2_addr_o = `DEFAULT_5_ZERO;
+                    // id2idex_source1_o = regs2id_rs1_data_i;
+                    // id2idex_source2_o = {{20{imm_i[11]}}, imm_i};//imm符号位扩展
+                    // id2idex_rd_addr_o = id2idex_rd_o;
+                    // id2cu_wb_en_o = `ENABLE;
+                end
+            end
+            `INS_TYPE_L:begin // L
                 case(id2idex_funct3_o)
-                    `INS_LB:begin
+                    `INS_LB,`INS_LH,`INS_LW,`INS_LBU,`INS_LHU:begin
+                        // B-1Byte, H-2Byte W-4Byte
                         id2regs_rs1_addr_o = id2idex_rs1_o;
                         id2regs_rs2_addr_o = `DEFAULT_5_ZERO;
                         id2idex_source1_o = regs2id_rs1_data_i;
@@ -147,6 +163,29 @@ module IDU(
                     end
                 endcase
             end
+            `INS_TYPE_S:begin
+                case(id2idex_funct3_o)
+                    `INS_SB:begin
+                        id2idex_imm_s_o = {{20{imm_s[11]}}, imm_s}; // 将偏移地址进行译码
+                        id2regs_rs1_addr_o = id2idex_rs1_o;
+                        id2regs_rs2_addr_o = id2idex_rs2_o;
+                        id2idex_source1_o = regs2id_rs1_data_i;
+                        id2idex_source2_o = regs2id_rs2_data_i;
+                        id2idex_rd_addr_o = `DEFAULT_5_ZERO;
+                        id2cu_wb_en_o = `DISABLE;
+                        id2cu_mem_en_o = `ENABLE;
+                    end
+                    default:begin
+                        id2regs_rs1_addr_o = `DEFAULT_5_ZERO;
+                        id2regs_rs2_addr_o = `DEFAULT_5_ZERO;
+                        id2idex_source1_o = `DEFAULT_32_ZERO;
+                        id2idex_source2_o = `DEFAULT_32_ZERO;
+                        id2idex_rd_addr_o = `DEFAULT_5_ZERO;
+                        id2cu_wb_en_o = `DISABLE;
+                        id2cu_mem_en_o = `DISABLE;
+                    end
+                endcase
+            end
             default:begin
                 id2regs_rs1_addr_o = `DEFAULT_5_ZERO;
                 id2regs_rs2_addr_o = `DEFAULT_5_ZERO;
@@ -154,6 +193,7 @@ module IDU(
                 id2idex_source2_o = `DEFAULT_32_ZERO;
                 id2idex_rd_addr_o = `DEFAULT_5_ZERO;
                 id2cu_wb_en_o = `DISABLE;
+                id2cu_mem_en_o = `DISABLE;
             end
         endcase 
     end

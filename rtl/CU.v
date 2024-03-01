@@ -14,7 +14,7 @@ module CU(
     input wire id2cu_wb_en_i, // 写回使能
     input wire id2cu_mem_en_i, // 访存使能
     // to EX
-    output reg cu2ex_wb_en_o     // 写回使能
+    output reg cu2ex_wb_en_o,     // 写回使能
     output reg cu2ex_mem_en_o    // 访存使能（写入EX）
 );
 

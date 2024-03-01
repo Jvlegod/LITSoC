@@ -23,6 +23,7 @@
 `define RISCV_IMMI 11:0
 `define RISCV_IMMSB 12:0
 `define RISCV_IMMUJ 20:0
+`define RISCV_IMMS 11:0
 // 此处改成32位，前面没考虑周到
 // `define RISCV_IMMI 31:0
 // `define RISCV_IMMSB 31:0

@@ -12,7 +12,7 @@ module regs(
     // from EX
     input wire[`REGS_ADDR] ex2regs_rd_addr_i,
     input wire[`WORD_DATA] ex2regs_rd_data_i,
-    input wire ex2regs_wb_en_i
+    input wire ex2regs_wb_en_i,
     // from mem
     output wire mem2regs_wb_en_i,
     output wire[`RISCV_RD] mem2regs_rd_i,
