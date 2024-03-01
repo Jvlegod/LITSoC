@@ -21,7 +21,8 @@ module tb;
     always #10 clk = ~clk;
 
     initial begin
-        $readmemb("./self_tests/BEQ.txt", tb.u_cpu_top.u_ins_rom.rom_mem);
+        $readmemb("./self_tests/MEM.txt", tb.u_cpu_top.u_ins_rom.rom_mem);
+        // $readmemb("./self_tests/BEQ.txt", tb.u_cpu_top.u_ins_rom.rom_mem);
         // $readmemh("./tests/rv32ui-p-bne.txt", tb.u_cpu_top.u_ins_rom.rom_mem);
     end
 
