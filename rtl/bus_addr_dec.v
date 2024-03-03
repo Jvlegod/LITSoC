@@ -12,7 +12,8 @@ module bus_addr_dec(
     output reg s6_cs,
     output reg s7_cs,
 );
-    wire[`BUS_SLAVE_ADDR] s_index = s_addr;
+    // 关注高三位
+    wire[3:0] s_index = s_addr[31:29];
 
     always @(*) begin
         s0_cs = `DISABLE;

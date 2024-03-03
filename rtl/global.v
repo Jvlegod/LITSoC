@@ -47,11 +47,30 @@
 `define BUS_SLAVE_6 3'b110
 `define BUS_SLAVE_7 3'b111
 
+// 定时器
+`define TIMER_ENABLE 1'b0
+`define TIMER_DISABLE 1'b1
+
+`define TIMER_CIRCLE_UP 2'b00
+`define TIMER_CIRCLE_DOWN 2'b01
+`define TIMER_SINGLE_UP 2'b10
+`define TIMER_SINGLE_DOWN 2'b11
+
+`define TIMER_ACCESS_ADDR 2:0
+
+`define TIMER_EXPR_ADDR    2'b00
+`define TIMER_COUNTER_ADDR 2'b01
+`define TIMER_STATE_ADDR   2'b10
+`define TIMER_CTRL_ADDR    2'b11
+
+`define TIMER_MAX_EXPR     8'd255
+
 // 读写
 `define READ 1'b0
 `define WRITE 1'b1
 
-`define BUS_SLAVE_ADDR 2:0 // 参考了《CPU自制入门一书》，书中相关的值给了30，这里给了3我觉得就够了
+`define BUS_SLAVE_ADDR 31:0
+// 参考了《CPU自制入门一书》，书中相关的值给了30，这里给了3我觉得就够了
 
 // 负逻辑
 
