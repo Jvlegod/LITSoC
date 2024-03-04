@@ -21,7 +21,8 @@ module tb;
     always #10 clk = ~clk;
 
     initial begin
-        $readmemb("./self_tests/test_lists/MEM.txt", tb.u_cpu_top.u_ins_rom.rom_mem);
+        $readmemb("./self_tests/test_lists/TEST.txt", tb.u_cpu_top.u_ins_rom.rom_mem);
+        // $readmemb("./self_tests/test_lists/MEM.txt", tb.u_cpu_top.u_ins_rom.rom_mem);
         // $readmemb("./self_tests/BEQ.txt", tb.u_cpu_top.u_ins_rom.rom_mem);
         // $readmemh("./tests/rv32ui-p-bne.txt", tb.u_cpu_top.u_ins_rom.rom_mem);
     end
@@ -30,9 +31,13 @@ module tb;
         while(1)begin
 			@(posedge clk) 
 			$display("PC register value is %d",tb.u_cpu_top.u_cpu_core.u_pc_reg.pc2if_addr_o);
+			$display("x0 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[0]);
+			$display("x1 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[1]);
 			$display("x3 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[3]);
 			$display("x4 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[4]);
 			$display("x5 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[5]);
+			$display("x6 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[6]);
+			$display("x7 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[7]);
 			$display("---------------------------");
 			$display("---------------------------");
 		end
