@@ -14,8 +14,9 @@ module ALU(
     output wire [`WORD_DATA] ALU_xor,
     output wire [`WORD_DATA] ALU_sll,
     output wire [`WORD_DATA] ALU_srl,
-    output wire [`WORD_DATA] ALU_stl,
-    output wire [`WORD_DATA] ALU_stlu,
+    output wire [`WORD_DATA] ALU_sra,
+    output wire [`WORD_DATA] ALU_slt,
+    output wire [`WORD_DATA] ALU_sltu,
     output wire  ALU_beq,
     output wire  ALU_bne,
     output wire  ALU_blt,
@@ -33,8 +34,8 @@ module ALU(
     assign ALU_sll = ALU_source1 << ALU_source2[4:0]; // 此处ALU_source2[5]为0有效，逻辑没写
     assign ALU_srl = ALU_source1 >> ALU_source2[4:0]; // 此处ALU_source2[5]为0有效，逻辑没写
     assign ALU_sra = ({32{ALU_source1[31]}} << (6'd32 - {1'b0, ALU_source2[4:0]})) | (ALU_source1 >> ALU_source2[4:0]); // 此处ALU_source2[5]为0有效，逻辑没写
-    assign ALU_stl = ($signed(ALU_source1)) < ($signed(ALU_source2)) ? 32'b1 : 32'b0;
-    assign ALU_stlu = (ALU_source1) < (ALU_source2) ? 32'b1 : 32'b0;
+    assign ALU_slt = ($signed(ALU_source1)) < ($signed(ALU_source2)) ? 32'b1 : 32'b0;
+    assign ALU_sltu = (ALU_source1) < (ALU_source2) ? 32'b1 : 32'b0;
     assign ALU_beq = ($signed(ALU_source1) == $signed(ALU_source2)) ? `ENABLE : `DISABLE;
     assign ALU_bne = ($signed(ALU_source1) != $signed(ALU_source2)) ? `ENABLE : `DISABLE;
     assign ALU_blt = ($signed(ALU_source1) < $signed(ALU_source2)) ? `ENABLE : `DISABLE;

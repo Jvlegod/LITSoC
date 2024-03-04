@@ -46,6 +46,9 @@ module EXU(
     // to regs
     output reg[`REGS_ADDR] ex2regs_rd_addr_o,
     output reg[`WORD_DATA] ex2regs_rd_data_o
+    // output reg ex2regs_mem_rd_o,
+    // to MEM
+    // output reg[`WORD_ADDR] ex2mem_passbynetwork_rd_o
 );
     wire [`WORD_DATA] ALU_add;
     wire [`WORD_DATA] ALU_sub;
@@ -103,6 +106,7 @@ module EXU(
         ex2exmem_wb_en_o = `DISABLE;
         ex2exmem_mem_en_o = `DISABLE;
         ex2exmem_we_o = `DISABLE;
+        // ex2regs_mem_rd_o = `DISABLE;
         case(idex2ex_opcode_i)
             `INS_TYPE_I:begin
                 case(idex2ex_funct3_i)
@@ -249,19 +253,35 @@ module EXU(
                 // 此处可能需要判断合法性
                 ex2cu_jump_en_o = `ENABLE;
                 ex2pc_jump_addr_o = idex2ex_id_addr_i + idex2ex_imm_uj_i;
-                ex2regs_rd_addr_o = idex2ex_rd_addr_i; // 手册上写默认x1???
+                ex2regs_rd_addr_o = idex2ex_rd_addr_i;
                 ex2regs_rd_data_o = idex2ex_id_addr_i + `A_PC;
             end
-            `INS_TYPE_L:begin
+            `INS_TYPE_JALR:begin
+                if (idex2ex_funct3_i == 3'b000) begin
+                    ex2cu_jump_en_o = `ENABLE;
+                    ex2pc_jump_addr_o = (idex2ex_source1_i + idex2ex_source2_i) & 32'hFFFFFFFE;
+                    ex2regs_rd_addr_o = idex2ex_rd_addr_i;
+                    ex2regs_rd_data_o = idex2ex_id_addr_i + `A_PC;
+                end
+            end
+            `INS_TYPE_AUIPC:begin
+                ex2cu_jump_en_o = `ENABLE;
+                ex2pc_jump_addr_o = idex2ex_id_addr_i + idex2ex_source2_i;
+                ex2regs_rd_addr_o = idex2ex_rd_addr_i;
+                ex2regs_rd_data_o = idex2ex_id_addr_i + idex2ex_source2_i;
+            end
+            // 访存
+            `INS_TYPE_L:begin 
+                // ex2regs_mem_rd_o = `ENABLE;
                 case(idex2ex_funct3_i)
                     `INS_LB,`INS_LH,`INS_LW,`INS_LBU,`INS_LHU:begin // 加载指令需要修改
                         ex2exmem_opcode_o = idex2ex_opcode_i;
                         ex2exmem_funct3_o = idex2ex_funct3_i;
-                        ex2regs_wb_en_o = `DISABLE;
                         ex2exmem_mem_addr_o = ALU_add;
                         ex2exmem_rd_o = idex2ex_rd_addr_i;
                         ex2exmem_wb_en_o = `ENABLE;
                         ex2exmem_mem_en_o = `ENABLE;
+                        // ex2mem_passbynetwork_rd_o = idex2ex_rd_addr_i; // 数据旁路地址
                     end
                     default:begin
                     end
@@ -274,10 +294,10 @@ module EXU(
                         ex2exmem_funct3_o = idex2ex_funct3_i;
                         ex2exmem_mem_addr_o = ALU_add_s_sb;  // 访问的地址
                         ex2exmem_data_o = idex2ex_source2_i; // 准备存储的数据
-                        ex2regs_wb_en_o = `DISABLE;
                         ex2exmem_wb_en_o = `DISABLE;
                         ex2exmem_mem_en_o = `ENABLE;
                         ex2exmem_we_o = `ENABLE;
+                        // ex2mem_passbynetwork_rd_o = idex2ex_source2_i; // 数据旁路地址
                     end
                     default:begin
                     end

@@ -13,10 +13,12 @@ module regs(
     input wire[`REGS_ADDR] ex2regs_rd_addr_i,
     input wire[`WORD_DATA] ex2regs_rd_data_i,
     input wire ex2regs_wb_en_i,
+    // input wire ex2regs_mem_rd_i, // 防止译码冲突
     // from mem
-    output wire mem2regs_wb_en_i,
-    output wire[`RISCV_RD] mem2regs_rd_i,
-    output wire[`WORD_DATA] mem2regs_rd_data_i
+    input wire mem2regs_wb_en_i,
+    input wire[`RISCV_RD] mem2regs_rd_i,
+    input wire[`WORD_DATA] mem2regs_rd_data_i
+    // input wire[`WORD_DATA] mem2regs_passbynetwork_i   // 数据旁路 
 );
     // 寄存器堆
     reg[`WORD_DATA] x_regs[0:31];
@@ -30,9 +32,15 @@ module regs(
             regs2id_rs1_data_o = `DEFAULT_32_ZERO;
         end else if (id2regs_rs1_addr_i == ex2regs_rd_addr_i) begin // 防止写回和译码冲突（后期专门用一个模块来处理）
             regs2id_rs1_data_o = ex2regs_rd_data_i;
+        end else if (id2regs_rs1_addr_i == mem2regs_rd_i) begin
+            regs2id_rs1_data_o = mem2regs_rd_data_i;
         end else begin
             regs2id_rs1_data_o = x_regs[id2regs_rs1_addr_i];
         end
+
+        // else if (ex2regs_mem_rd_i == `ENABLE && id2regs_rs1_addr_i == ex2regs_rd_addr_i) begin
+        //     regs2id_rs1_data_o = mem2regs_passbynetwork_i;
+        // end 
     end
 
     // rs2
@@ -41,9 +49,15 @@ module regs(
             regs2id_rs2_data_o = `DEFAULT_32_ZERO;
         end else if (id2regs_rs2_addr_i == ex2regs_rd_addr_i) begin // 防止写回和译码冲突（后期专门用一个模块来处理）
             regs2id_rs2_data_o = ex2regs_rd_data_i;
+        end else if (id2regs_rs2_addr_i == mem2regs_rd_i) begin
+            regs2id_rs2_data_o = mem2regs_rd_data_i;
         end else begin
             regs2id_rs2_data_o = x_regs[id2regs_rs2_addr_i];
         end
+
+        // else if (ex2regs_mem_rd_i == `ENABLE && id2regs_rs2_addr_i == ex2regs_rd_addr_i) begin
+        //     regs2id_rs2_data_o = mem2regs_passbynetwork_i;
+        // end
     end
 
     //EX
@@ -52,11 +66,16 @@ module regs(
             for (i = 0;i < `REGS_NUM; i = i + 1) begin
                 x_regs[i] <= `DEFAULT_32_ZERO;
             end
-        end else if (ex2regs_wb_en_i == `ENABLE) begin
-            x_regs[ex2regs_rd_addr_i] <= ex2regs_rd_data_i;
-        end else if (mem2regs_wb_en_i == `ENABLE) begin
-            x_regs[mem2regs_rd_i] <= mem2regs_rd_data_i;
+        end else begin
+            if (ex2regs_wb_en_i == `ENABLE) begin
+                x_regs[ex2regs_rd_addr_i] <= ex2regs_rd_data_i;
+            end
+            if (mem2regs_wb_en_i == `ENABLE) begin
+                x_regs[mem2regs_rd_i] <= mem2regs_rd_data_i;
+            end
         end
+        // x0必定为0
+        x_regs[5'b0] <= `DEFAULT_32_ZERO;
     end
 
 endmodule

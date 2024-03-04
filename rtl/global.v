@@ -32,6 +32,8 @@
 `define REGS_ADDR 4:0
 `define REGS_NUM 6'd32 // ?
 
+`define BYTE 7:0
+
 // 总线
 `define BUS_OWNER_MASTER_0 2'b00
 `define BUS_OWNER_MASTER_1 2'b01
