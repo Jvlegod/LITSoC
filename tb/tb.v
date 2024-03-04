@@ -31,7 +31,7 @@ module tb;
         while(1)begin
 			@(posedge clk) 
 			$display("PC register value is %d",tb.u_cpu_top.u_cpu_core.u_pc_reg.pc2if_addr_o);
-			$display("x0 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[0]);
+			// $display("x0 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[0]);
 			$display("x1 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[1]);
 			$display("x3 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[3]);
 			$display("x4 register value is %d",tb.u_cpu_top.u_cpu_core.u_regs.x_regs[4]);
