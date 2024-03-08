@@ -50,16 +50,34 @@
 `define BUS_SLAVE_7 3'b111
 
 // 定时器
+// start
 `define TIMER_ENABLE 1'b0
 `define TIMER_DISABLE 1'b1
 
-`define TIMER_CIRCLE_UP 2'b00
-`define TIMER_CIRCLE_DOWN 2'b01
-`define TIMER_SINGLE_UP 2'b10
-`define TIMER_SINGLE_DOWN 2'b11
+// mode[0]
+`define TIMER_UP 1'b1
+`define TIMER_DOWN 1'b0
+
+// mode[1]
+`define TIMER_SINGLE 1'b1
+`define TIMER_CIRCLE 1'b0
+
+// mode
+`define TIMER_MODE_CIRCLE_UP ((`TIMER_CIRCLE << 1) | (`TIMER_UP))
+`define TIMER_MODE_CIRCLE_DOWN ((`TIMER_CIRCLE << 1) | (`TIMER_DOWN))
+`define TIMER_MODE_SINGLE_UP ((`TIMER_SINGLE << 1) | (`TIMER_UP))
+`define TIMER_MODE_SINGLE_DOWN ((`TIMER_SINGLE << 1) | (`TIMER_DOWN))
+
+// wr_data
+`define TIMER_STOP (`TIMER_DISABLE << 2)
+`define TIMER_CIRCLE_UP ((`TIMER_ENABLE << 2) | `TIMER_MODE_CIRCLE_UP)
+`define TIMER_CIRCLE_DOWN ((`TIMER_ENABLE << 2) | `TIMER_MODE_CIRCLE_DOWN)
+`define TIMER_SINGLE_UP ((`TIMER_ENABLE << 2) | `TIMER_MODE_SINGLE_UP)
+`define TIMER_SINGLE_DOWN ((`TIMER_ENABLE << 2) | `TIMER_MODE_SINGLE_DOWN)
 
 `define TIMER_ACCESS_ADDR 2:0
 
+// addr
 `define TIMER_EXPR_ADDR    2'b00
 `define TIMER_COUNTER_ADDR 2'b01
 `define TIMER_STATE_ADDR   2'b10
