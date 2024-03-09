@@ -50,6 +50,10 @@
 `define BUS_SLAVE_7 3'b111
 
 // 定时器
+// 选通地址
+`define TIMER_ADDR_L 32'h0
+`define TIMER_ADDR_H 32'hFFFFFFFF
+
 // start
 `define TIMER_ENABLE 1'b0
 `define TIMER_DISABLE 1'b1

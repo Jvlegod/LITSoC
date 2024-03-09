@@ -25,10 +25,10 @@ module bus_master_mux(
     input wire[`WORD_DATA] m3_wr_data,  
     input wire m3_grnt,     
 
-    output wire[`BUS_SLAVE_ADDR] s_addr,
-    output wire s_as,
-    output wire s_rw,
-    output wire[`WORD_DATA] s_wr_data
+    output reg[`BUS_SLAVE_ADDR] s_addr,
+    output reg s_as,
+    output reg s_rw,
+    output reg[`WORD_DATA] s_wr_data
 );
 
 
@@ -53,8 +53,7 @@ module bus_master_mux(
             s_as = m3_as;
             s_rw = m3_rw;
             s_wr_data = m3_wr_data;
-        end
-        default:begin
+        end else begin
             s_addr = 2'b0;
             s_as = `DISABLE;
             s_rw = `READ;

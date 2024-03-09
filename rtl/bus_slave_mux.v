@@ -33,8 +33,8 @@ module bus_slave_mux(
     input wire[`WORD_DATA] s7_rd_data,     
     input wire s7_rdy,      
 
-    output reg[`WORD_DATA] bus_rd_data;    // 读出的数据
-    output reg bus_rdy;
+    output reg[`WORD_DATA] bus_rd_data,    // 读出的数据
+    output reg bus_rdy
 );
 
     always @(*) begin

@@ -10,7 +10,7 @@ module bus_addr_dec(
     output reg s4_cs,
     output reg s5_cs,
     output reg s6_cs,
-    output reg s7_cs,
+    output reg s7_cs
 );
     // 关注高三位
     wire[3:0] s_index = s_addr[31:29];

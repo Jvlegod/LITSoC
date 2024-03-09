@@ -40,4 +40,57 @@ module bus_arbiter(
         endcase
     end
 
+    always @(posedge clk) begin
+        if (rest == `RESET) begin
+            owner <= `BUS_OWNER_MASTER_0;
+        end else begin
+            case(owner)
+                `BUS_OWNER_MASTER_0:begin
+                    if (m0_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_0;
+                    end else if (m1_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_1;
+                    end else if (m2_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_2;
+                    end else if (m3_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_3;
+                    end
+                end
+                `BUS_OWNER_MASTER_1:begin
+                    if (m1_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_1;
+                    end else if (m2_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_2;
+                    end else if (m3_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_3;
+                    end else if (m0_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_0;
+                    end
+                end
+                `BUS_OWNER_MASTER_2:begin
+                    if (m2_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_2;
+                    end else if (m3_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_3;
+                    end else if (m0_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_0;
+                    end else if (m1_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_1;
+                    end
+                end
+                `BUS_OWNER_MASTER_3:begin
+                    if (m3_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_3;
+                    end else if (m0_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_0;
+                    end else if (m1_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_1;
+                    end else if (m2_req == `ENABLE) begin
+                        owner <= `BUS_OWNER_MASTER_2;
+                    end
+                end
+            endcase
+        end
+    end
+
 endmodule

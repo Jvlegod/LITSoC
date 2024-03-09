@@ -2,16 +2,23 @@
 
 module cpu_top(
     input wire clk,
-    input wire rest,
+    input wire rest
 );
     wire [`WORD_ADDR] if2rom_ins_o;
     wire [`WORD_ADDR] rom2if_ins_o;
 
     cpu_core u_cpu_core(
-        .clk          (clk          ),
-        .rest         (rest         ),
-        .rom2if_ins_i (rom2if_ins_o ),
-        .if2rom_ins_o (if2rom_ins_o )
+        .clk            (clk            ),
+        .rest           (rest           ),
+        .rom2if_ins_i   (rom2if_ins_o   ),
+        .if2rom_ins_o   (if2rom_ins_o   ),
+        .bus_m0_req     (bus_mem_req    ),
+        .bus_m0_addr    (bus_mem_addr   ),
+        .bus_m0_as      (bus_mem_as     ),
+        .bus_m0_rw      (bus_mem_rw     ),
+        .bus_m0_wr_data (bus_mem_wr_data),
+        .bus_m0_grnt    (bus_mem_grnt   ),
+        .bus_rdy        (bus_rdy        )
     );          
 
     wire[`BUS_SLAVE_ADDR] bus_s_addr;
@@ -24,7 +31,7 @@ module cpu_top(
     // wire bus_m0_as;      
     // wire bus_m0_rw;      
     // wire[`WORD_DATA] bus_m0_wr_data; 
-    wire bus_m0_grnt;    // 此信号给主设备
+    // wire bus_m0_grnt;
     
     wire bus_m1_req;    
     wire[`BUS_SLAVE_ADDR] bus_m1_addr;    
@@ -45,9 +52,9 @@ module cpu_top(
     wire bus_m3_as;      
     wire bus_m3_rw;      
     wire[`WORD_DATA] bus_m3_wr_data; 
-    wire bus_m2_grnt;    
+    wire bus_m3_grnt;    
     
-    wire bus_rdy;        
+    // wire bus_rdy;        
     wire[`WORD_DATA] bus_rd_data;    
     
     wire bus_s0_cs;      
@@ -88,6 +95,7 @@ module cpu_top(
     wire bus_mem_as;
     wire bus_mem_rw;
     wire[`WORD_DATA] bus_mem_wr_data;
+    wire bus_mem_grnt; // 此信号给主设备
 
 
     bus u_bus(
@@ -101,9 +109,9 @@ module cpu_top(
         .bus_m0_req     (bus_mem_req    ),
         .bus_m0_addr    (bus_mem_addr   ),
         .bus_m0_as      (bus_mem_as     ),
-        .bus_m0_rw      (bus_m0_rw      ),
+        .bus_m0_rw      (bus_mem_rw     ),
         .bus_m0_wr_data (bus_mem_wr_data),
-        .bus_m0_grnt    (bus_m0_grnt    ),
+        .bus_m0_grnt    (bus_mem_grnt   ),
         .bus_m1_req     (bus_m1_req     ),
         .bus_m1_addr    (bus_m1_addr    ),
         .bus_m1_as      (bus_m1_as      ),
@@ -121,6 +129,7 @@ module cpu_top(
         .bus_m3_as      (bus_m3_as      ),
         .bus_m3_rw      (bus_m3_rw      ),
         .bus_m3_wr_data (bus_m3_wr_data ),
+        .bus_m3_grnt    (bus_m3_grnt    ),
         .bus_rdy        (bus_rdy        ), // output
         .bus_rd_data    (bus_rd_data    ), // output
         // 定时器

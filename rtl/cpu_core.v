@@ -7,7 +7,15 @@ module cpu_core(
     // from rom
     input wire[`WORD_ADDR] rom2if_ins_i,
     // to rom
-    output wire [`WORD_ADDR] if2rom_ins_o
+    output wire [`WORD_ADDR] if2rom_ins_o,
+    // to Bus
+    output wire bus_m0_req,     
+    output wire[`WORD_ADDR] bus_m0_addr,    
+    output wire bus_m0_as,      
+    output wire bus_m0_rw,      
+    output wire[`WORD_DATA] bus_m0_wr_data, 
+    input  wire bus_m0_grnt,    
+    input  wire bus_rdy
 );
     // pc_regs
     wire[`WORD_ADDR] pc2if_addr_o;
@@ -249,7 +257,15 @@ module cpu_core(
         .exmem2mem_rs2_i      (exmem2mem_rs2_o     ),
         .mem2regs_wb_en_o     (mem2regs_wb_en_o    ),
         .mem2regs_rd_o        (mem2regs_rd_o       ),
-        .mem2regs_rd_data_o   (mem2regs_rd_data_o  )
+        .mem2regs_rd_data_o   (mem2regs_rd_data_o  ),
+        // 总线
+        .bus_mem_req          (bus_m0_req          ),
+        .bus_mem_addr         (bus_m0_addr         ),
+        .bus_mem_as           (bus_m0_as           ),
+        .bus_mem_rw           (bus_m0_rw           ),
+        .bus_mem_wr_data      (bus_m0_wr_data      ),
+        .bus_mem_grnt         (bus_m0_grnt         ),
+        .bus_mem_rdy          (bus_rdy             )
     );
     
     

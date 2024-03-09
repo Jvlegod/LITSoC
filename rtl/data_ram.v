@@ -7,8 +7,11 @@ module data_ram(
     input wire[`WORD_DATA] mem2ram_data, // 数据
     // input wire[`WORD_DATA] ex2mem_passbynetwork_rd_i,
     // to MEM
-    output reg[`WORD_DATA] ram2mem_data // 地址
+    output reg[`WORD_DATA] ram2mem_data, // 地址
     // output reg[`WORD_DATA] mem2regs_passbynetwork_o
+    // to Bus
+    output reg[`WORD_ADDR] bus_mem_addr, // 地址
+    output reg[`WORD_DATA] bus_mem_data // 数据
 );
     reg[`BYTE] data_mem[0:3][0:4095]; // 内存
 
@@ -25,6 +28,9 @@ module data_ram(
             data_mem[1][mem2ram_addr] = mem2ram_data[15:8];
             data_mem[2][mem2ram_addr] = mem2ram_data[23:16];
             data_mem[3][mem2ram_addr] = mem2ram_data[31:24];
+            // to bus
+            bus_mem_addr = mem2ram_addr;
+            bus_mem_data = mem2ram_data;
             // data_mem[mem2ram_addr] = mem2ram_data;
             // for (i = 0; i < 4; i ++) begin
             //     data_mem[i][mem2ram_addr] = mem2ram_data[(i+1)*8-1:i*8];

@@ -73,8 +73,8 @@ module bus(
     input  wire bus_s6_rdy,
 
     output wire bus_s7_cs,
-    input  wire[`WORD_DATA] bus_s7_rd_data
-    input  wire bus_s7_rdy,
+    input  wire[`WORD_DATA] bus_s7_rd_data,
+    input  wire bus_s7_rdy
 );
     bus_arbiter u_bus_arbiter(
         .clk     (clk         ),
@@ -118,7 +118,6 @@ module bus(
     
     bus_addr_dec u_bus_addr_dec(
         .s_addr     (bus_s_addr ),
-        .s_wr_data  (bus_wr_data),
         .s0_cs      (bus_s0_cs  ),
         .s1_cs      (bus_s1_cs  ),
         .s2_cs      (bus_s2_cs  ),
