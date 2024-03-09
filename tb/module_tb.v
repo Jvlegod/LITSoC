@@ -24,10 +24,13 @@ module module_tb;
         as <= `ENABLE;
         rw <= `WRITE;
         addr <= `TIMER_CTRL_ADDR;
+        // 向上计数
         wr_data <= `TIMER_CIRCLE_UP;
-        #3000;
-        wr_data <= `TIMER_MODE_CIRCLE_DOWN;
-        #500
+        #3000
+        // 向下计数
+        wr_data <= `TIMER_CIRCLE_DOWN;
+        // 暂停
+        #500;
         wr_data <= `TIMER_STOP;
     end
 

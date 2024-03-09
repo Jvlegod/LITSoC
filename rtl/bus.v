@@ -9,7 +9,7 @@ module bus(
     output wire[`BUS_SLAVE_ADDR] bus_s_addr,        // 选择出的从属信号的地址
     output wire				     bus_s_as,	 
 	output wire				     bus_s_rw,
-    output wire[`WORD_DATA]      bus_s_wr_data      // 主控写入的数据，送给从设备接收*
+    output wire[`WORD_DATA]      bus_s_wr_data,     // 主控写入的数据，送给从设备接收*
 
     // 主控
     input wire                  bus_m0_req,         // 请求信号
@@ -38,43 +38,43 @@ module bus(
     input wire                  bus_m3_as,
     input wire                  bus_m3_rw,
     input wire[`WORD_DATA]      bus_m3_wr_data,
-    output wire                 bus_m3_grnt
+    output wire                 bus_m3_grnt,
 
     // 从属
     output wire bus_rdy,                  // 从属就绪信号
     output wire[`WORD_DATA] bus_rd_data,  // 从属读出的数据，主设备接收
 
-    input  wire bus_s0_cs,                // s0从属片选信号
-    input  wire bus_s0_rd_data,           // s0从属读出的数据
-    output wire bus_s0_rdy,               // s0从属就绪信号
+    output  wire bus_s0_cs,                // s0从属片选信号
+    input  wire[`WORD_DATA] bus_s0_rd_data,            // s0从属读出的数据
+    input wire bus_s0_rdy,                 // s0从属就绪信号
 
     output  wire bus_s1_cs,
-    input  wire bus_s1_rd_data,
+    input  wire[`WORD_DATA] bus_s1_rd_data,
     input  wire bus_s1_rdy,
 
     output wire bus_s2_cs,
-    input  wire bus_s2_rd_data,
+    input  wire[`WORD_DATA] bus_s2_rd_data,
     input wire bus_s2_rdy,
 
     output wire bus_s3_cs,
-    input  wire bus_s3_rd_data,
+    input  wire[`WORD_DATA] bus_s3_rd_data,
     input wire bus_s3_rdy,
 
     output wire bus_s4_cs,
+    input  wire[`WORD_DATA] bus_s4_rd_data,
     input  wire bus_s4_rdy,
-    input  wire bus_s4_rd_data,
 
     output wire bus_s5_cs,
+    input  wire[`WORD_DATA] bus_s5_rd_data,
     input  wire bus_s5_rdy,
-    input  wire bus_s5_rd_data,
 
     output wire bus_s6_cs,
+    input  wire[`WORD_DATA] bus_s6_rd_data,
     input  wire bus_s6_rdy,
-    input  wire bus_s6_rd_data,
 
     output wire bus_s7_cs,
+    input  wire[`WORD_DATA] bus_s7_rd_data
     input  wire bus_s7_rdy,
-    input  wire bus_s7_rd_data
 );
     bus_arbiter u_bus_arbiter(
         .clk     (clk         ),

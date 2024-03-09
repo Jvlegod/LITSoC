@@ -8,7 +8,7 @@ module Timer(
     input  wire Timer_cs,                  // 片选
     input  wire Timer_as,                  // 选通
     input  wire Timer_rw,                  // 读写
-    output reg Timer_rdy,                 // 就绪
+    output reg Timer_rdy,                  // 就绪
     input wire[2:0] Timer_addr,            // 地址
     input wire[`WORD_DATA] Timer_wr_data,  // 写数据
     output reg[`WORD_DATA] Timer_rd_data,  // 读数据
