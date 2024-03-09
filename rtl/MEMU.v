@@ -80,6 +80,7 @@ module MEMU(
                     `INS_SB:begin // 涉及到Bus操作
                         // 判断是否是在相应的地址内
                         // 定时器的地址
+                        // 这里只挂了一个从设备，有多个需要完善代码
                         if ((ram2bus_mem_addr >= `TIMER_ADDR_L) && (ram2bus_mem_addr < `TIMER_ADDR_H)) begin
                             bus_mem_req = `ENABLE;
                             bus_mem_as = `ENABLE;
