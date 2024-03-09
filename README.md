@@ -38,6 +38,6 @@
 ## 6. 数据通路
 <div align="center">
 
-![alt text](pictures/CPU.jpg)
+![alt text](pictures/CPU.PNG)
 
 </div>
