@@ -25,7 +25,7 @@
     - 执行Makefile文件进行Verilog的仿真
 
 ## 5. 说明
-<p align="center">
+<div align="center">
 
 | time    | content|
 |:---------: | :--------:|
@@ -33,7 +33,7 @@
 |结构 | 哈佛结构|
 |流水线 | 5级|
 
-</p>
+</div>
 
 ## 6. 数据通路
 <p align="center">
