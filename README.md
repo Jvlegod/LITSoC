@@ -36,8 +36,8 @@
 </div>
 
 ## 6. 数据通路
-<p align="center">
+<div align="center">
 
 ![alt text](pictures/CPU.jpg)
 
-</p>
+</div>
