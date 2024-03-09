@@ -25,13 +25,29 @@
     - 执行Makefile文件进行Verilog的仿真
 
 ## 5. 说明
+
+### 5.1 结构
+
 <div align="center">
 
-| time    | content|
+| item    | content|
 |:---------: | :--------:|
 |指令集架构 | RISC-V|
-|结构 | 哈佛结构|
+|CPU结构 | 哈佛结构|
 |流水线 | 5级|
+
+</div>
+
+### 5.2 外设
+
+<div align="center">
+
+| peripheral | address|
+|:---------: | :--------:|
+|Timer | 0x0000_0000~0x1FFF_FFFF|
+|GPIO | 0x2000_0000~0x3FFF_FFFF|
+|...| ...|
+|暂未添加|暂未添加|
 
 </div>
 
