@@ -84,12 +84,12 @@ module MEMU(
                             bus_mem_req = `ENABLE;
                             bus_mem_as = `ENABLE;
                             bus_mem_rw = `WRITE;
-                        end
-                        // to bus
-                        if ((bus_mem_grnt == `ENABLE) && (bus_mem_rdy == `ENABLE)) begin
                             bus_mem_addr = ram2bus_mem_addr;
                             bus_mem_wr_data = ram2bus_mem_data;
                         end
+                        // to bus
+                        // if ((bus_mem_grnt == `ENABLE) && (bus_mem_rdy == `ENABLE)) begin
+                        // end
                         // to regs
                         mem2regs_wb_en_o = `DISABLE;
                         mem2regs_rd_o = `DEFAULT_5_ZERO;

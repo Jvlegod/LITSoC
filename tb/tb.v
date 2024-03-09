@@ -69,7 +69,7 @@ module tb;
     end
 
     initial begin
-        #1000;
+        #10000;
         $finish;
     end
 

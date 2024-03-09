@@ -82,10 +82,10 @@
 `define TIMER_ACCESS_ADDR 2:0
 
 // addr
-`define TIMER_EXPR_ADDR    2'b00
-`define TIMER_COUNTER_ADDR 2'b01
-`define TIMER_STATE_ADDR   2'b10
-`define TIMER_CTRL_ADDR    2'b11
+`define TIMER_EXPR_ADDR    3'b000
+`define TIMER_COUNTER_ADDR 3'b001
+`define TIMER_STATE_ADDR   3'b010
+`define TIMER_CTRL_ADDR    3'b100
 
 `define TIMER_MAX_EXPR     8'd255
 
