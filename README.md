@@ -4,7 +4,10 @@
 ## 1. 开发环境
 操作系统: windows10/Ubuntu 20.04
 
-编程语言: Verilog、C/C++
+编程语言: 
+1. Verilog
+2. C/C++
+3. python
 ## 2. 开发工具
 1. vscode
     - Verilog-HDL
@@ -12,6 +15,8 @@
     - ctags
 2. iverilog、Verilator
 3. gtkwave
+4. Makefile
+5. riscv交叉编译工具链
 ## 3. 文件说明
 1. 使用iverilog仿真:
     - 执行run.bat进行全局仿真
